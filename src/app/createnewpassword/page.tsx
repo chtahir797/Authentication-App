@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,7 +24,7 @@ function Page() {
 
   // Retrieve token from URL parameters
   const token = searchParams.get("token");
-
+  const email = searchParams.get("email");
   // If no token is present, redirect to the sign-in page
   if (!token) {
     router.push("/signin");
