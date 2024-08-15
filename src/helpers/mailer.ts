@@ -1,13 +1,18 @@
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
-import User from "@/models/userModel"; // Assuming you have a User model
+import User from "@/models/userModel";
 
-export const sendEmail = async ({ email, emailType, userId }) => {
+interface SendEmailParams {
+  email: string;
+  emailType: string;
+  userId: string;
+}
+
+export const sendEmail = async ({ email, emailType, userId }: SendEmailParams) => {
   try {
-    const salt = await bcrypt.genSalt(10); // Ensure salt generation
+    const salt = await bcrypt.genSalt(10);
     const hashedToken = await bcrypt.hash(userId.toString(), salt);
 
-    // Update user with the appropriate token and expiry based on emailType
     if (emailType === "VERIFY") {
       await User.findByIdAndUpdate(userId, {
         verifyToken: hashedToken,
@@ -25,8 +30,8 @@ export const sendEmail = async ({ email, emailType, userId }) => {
       port: 465,
       secure: true,
       auth: {
-        user: process.env.EMAIL_USER , // Store credentials in env variables
-        pass: process.env.EMAIL_PASS ,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
@@ -35,15 +40,13 @@ export const sendEmail = async ({ email, emailType, userId }) => {
       to: email,
       subject:
         emailType === "VERIFY" ? "Verify your email" : "Reset your password",
-      html: `<p>Click here to ${
-        emailType === "VERIFY" ? "verify your email" : "reset your password"
-      }: 
+      html: `<p>Click here to ${emailType === "VERIFY" ? "verify your email" : "reset your password"
+        }: 
 
-            ${
-              emailType === "VERIFY"
-                ? `<a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">${process.env.DOMAIN}/verifyemail?token=${hashedToken}</a></p>`
-                : `<a href="${process.env.DOMAIN}/createnewpassword?token=${hashedToken}">${process.env.DOMAIN}/createnewpassword?token=${hashedToken}</a></p>`
-            }`,
+            ${emailType === "VERIFY"
+          ? `<a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}">${process.env.DOMAIN}/verifyemail?token=${hashedToken}</a></p>`
+          : `<a href="${process.env.DOMAIN}/createnewpassword?token=${hashedToken}">${process.env.DOMAIN}/createnewpassword?token=${hashedToken}</a></p>`
+        }`,
     });
 
     return mailResponse;
