@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState,useEffect } from "react";
 const formSchema = z
   .object({
     password: z
@@ -44,19 +45,24 @@ function Page() {
       confirmPassword: "",
     },
   });
+  const [token,setToken] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
   // Form validation schema
 
-
   // Retrieve token from URL parameters
-  const searchParams = new URLSearchParams(window.location.search);
-  const token = searchParams.get("token");
+  useEffect(()=>{
+    const queryParams = new URLSearchParams(window.location.search);
+    const getToken = queryParams.get("token");
+    setToken(getToken)
+  },[])
 
   // If no token is present, redirect to the sign-in page
   if (!token) {
     router.push("/signin");
-    return null;
+    return <div className="h-screen flex items-center justify-center">
+    <h1 className="text-6xl text-orange-500 font-medium">Loading</h1>
+    </div>;
   }
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
