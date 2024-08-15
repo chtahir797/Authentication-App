@@ -146,7 +146,7 @@ function Page() {
         description: "Reset email sent to your address"
         
       })
-      router.push('/dashboard');
+      router.push('/signin');
     } catch (error) {
       toast({
         title: "Error",
