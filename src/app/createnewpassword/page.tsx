@@ -135,6 +135,18 @@
 // }
 
 // export default Page;
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -159,8 +171,7 @@ function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const token = searchParams.get("token");
-
+  // Form validation schema
   const formSchema = z.object({
     password: z
       .string()
@@ -185,6 +196,10 @@ function Page() {
     },
   });
 
+  // Retrieve token from URL parameters
+  const token = searchParams.get("token");
+
+  // If no token is present, render nothing (or redirect)
   if (!token) {
     router.push("/signin");
     return null;

@@ -100,21 +100,18 @@ function VerifyEmailPage() {
       router.push('/signin');
     }
   }, [verify, router]);
-
+  
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const getToken = queryParams.get('token');
     setToken(getToken || '');
-
+  
     if (!getToken) {
-      setError('No token found. Redirecting to signup page...');
-      setTimeout(() => {
-        router.push('/signup');
-      }, 2000);
-    } else {
-      verifyUserEmail();
+      router.push('/signup');
+      console.warn('Not allowed to stay here without a token');
     }
   }, [router]);
+  
 
   return (
     <section className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-indigo-500 to-purple-600 p-6">
