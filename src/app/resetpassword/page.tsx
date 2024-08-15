@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-function page() {
+function Page() {
   const { toast } = useToast();
   const router = useRouter();
   const formSchema = z.object({
@@ -40,7 +40,7 @@ function page() {
       const response = await axios.post("/api/users/reset", data);
       toast({
         title: "SUCCESS",
-        description: "Reset email send to your address",
+        description: "Reset email sent to your address",
       });
       router.push("/dashboard");
     } catch (error) {
@@ -94,4 +94,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;
