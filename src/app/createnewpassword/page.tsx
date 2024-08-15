@@ -164,7 +164,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation"; 
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   password: z
@@ -185,10 +186,17 @@ const formSchema = z.object({
 function Page() {
   const { toast } = useToast();
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); 
+  const [token, setToken] = useState<string | null>(null);
 
-  // Form validation schema
- 
+  useEffect(() => {
+    const urlToken = searchParams.get("token");
+    if (urlToken) {
+      setToken(urlToken);
+    } else {
+      router.push("/signin");
+    }
+  }, [searchParams, router]);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -197,15 +205,6 @@ function Page() {
       confirmPassword: "",
     },
   });
-
-  // Retrieve token from URL parameters
-  const token = searchParams.get("token");
-
-  // If no token is present, render nothing (or redirect)
-  if (!token) {
-    router.push("/signin");
-    return null;
-  }
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
@@ -225,6 +224,8 @@ function Page() {
       });
     }
   };
+
+  if (!token) return null;
 
   return (
     <section className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-indigo-500 to-purple-600 p-6">
