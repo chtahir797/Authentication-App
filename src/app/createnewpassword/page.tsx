@@ -15,25 +15,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { useRouter } from "next/navigation"; 
-
-function Page() {
-  const { toast } = useToast();
-  const router = useRouter();
-
-  // Retrieve token from URL parameters
-  const searchParams = new URLSearchParams(window.location.search);
-  const token = searchParams.get("token");
-
-
-  // If no token is present, redirect to the sign-in page
-  if (!token) {
-    router.push("/signin");
-    return null;
-  }
-
-  // Form validation schema
-  const formSchema = z.object({
+import { useRouter } from "next/navigation";
+const formSchema = z
+  .object({
     password: z
       .string()
       .min(7, {
@@ -43,12 +27,16 @@ function Page() {
         message:
           "Your password must contain at least one letter, one number, and one special character",
       }),
-    confirmPassword: z.string().min(7, { message: "Please confirm your password" }),
-  }).refine((data) => data.password === data.confirmPassword, {
+    confirmPassword: z
+      .string()
+      .min(7, { message: "Please confirm your password" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
     message: "Passwords don't match",
   });
 
+function Page() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,18 +44,32 @@ function Page() {
       confirmPassword: "",
     },
   });
+  const { toast } = useToast();
+  const router = useRouter();
+  // Form validation schema
+
+
+  // Retrieve token from URL parameters
+  const searchParams = new URLSearchParams(window.location.search);
+  const token = searchParams.get("token");
+
+  // If no token is present, redirect to the sign-in page
+  if (!token) {
+    router.push("/signin");
+    return null;
+  }
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch('/api/users/createpassword', { 
-        password: data.password, 
-        token 
+      await axios.patch("/api/users/createpassword", {
+        password: data.password,
+        token,
       });
       toast({
         title: "Password Reset Successfully",
         description: "Please log in with your new password.",
       });
-      router.push('/signin');
+      router.push("/signin");
     } catch (error) {
       toast({
         title: "Error",
@@ -107,7 +109,9 @@ function Page() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-indigo-700">Confirm Password</FormLabel>
+                  <FormLabel className="text-indigo-700">
+                    Confirm Password
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Confirm Password"
@@ -134,7 +138,3 @@ function Page() {
 }
 
 export default Page;
-
-
-
-
