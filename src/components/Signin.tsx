@@ -50,8 +50,8 @@ function Signin() {
     try {
       const response = await axios.post("/api/users/signin", data);
       toast({
-        title: "Account Created Successfully",
-        description: "Please check your email to verify your account.",
+        title: "Login Successfully",
+        
       });
       router.push("/dashboard");
     } catch (error) {
