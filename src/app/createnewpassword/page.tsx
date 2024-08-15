@@ -146,7 +146,6 @@
 
 
 
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -165,7 +164,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 const formSchema = z.object({
   password: z
@@ -183,7 +182,7 @@ const formSchema = z.object({
   message: "Passwords don't match",
 });
 
-function Page() {
+function CreateNewPasswordForm() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams(); 
@@ -281,6 +280,14 @@ function Page() {
         </Form>
       </div>
     </section>
+  );
+}
+
+function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CreateNewPasswordForm />
+    </Suspense>
   );
 }
 
