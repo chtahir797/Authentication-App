@@ -7,24 +7,24 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast"
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; 
 
-function Page() {
-  const { toast } = useToast();
-  const router = useRouter();
+function page() {
+  const { toast } = useToast()
+  const router = useRouter()
   const formSchema = z.object({
     email: z.string().email({
       message: "Please enter a valid email",
-    }),
+    })
   });
 
   const form = useForm({
@@ -37,18 +37,20 @@ function Page() {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log(data);
     try {
-      const response = await axios.post("/api/users/reset", data);
+      const response = await axios.post('/api/users/reset',data) 
       toast({
         title: "SUCCESS",
-        description: "Reset email sent to your address",
-      });
-      router.push("/dashboard");
+        description: "Reset email send to your address"
+        
+      })
+      router.push('/dashboard');
     } catch (error) {
       toast({
         title: "Error",
-        description: "There was an issue in sending email",
+        description: "There was an issue in sending",
       });
     }
+    
   };
 
   return (
@@ -59,6 +61,7 @@ function Page() {
       <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
             <FormField
               control={form.control}
               name="email"
@@ -81,11 +84,13 @@ function Page() {
               )}
             />
 
+           
+
             <Button
               type="submit"
               className="w-full py-3 text-white bg-indigo-700 rounded-md hover:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-500"
             >
-              Reset Password
+              Reset Password 
             </Button>
           </form>
         </Form>
@@ -94,4 +99,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default page;
