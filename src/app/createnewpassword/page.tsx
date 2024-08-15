@@ -166,27 +166,29 @@ import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation"; 
 
+const formSchema = z.object({
+  password: z
+    .string()
+    .min(7, {
+      message: "Password length must be greater than 7",
+    })
+    .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/, {
+      message:
+        "Your password must contain at least one letter, one number, and one special character",
+    }),
+  confirmPassword: z.string().min(7, { message: "Please confirm your password" }),
+}).refine((data) => data.password === data.confirmPassword, {
+  path: ["confirmPassword"],
+  message: "Passwords don't match",
+});
+
 function Page() {
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   // Form validation schema
-  const formSchema = z.object({
-    password: z
-      .string()
-      .min(7, {
-        message: "Password length must be greater than 7",
-      })
-      .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/, {
-        message:
-          "Your password must contain at least one letter, one number, and one special character",
-      }),
-    confirmPassword: z.string().min(7, { message: "Please confirm your password" }),
-  }).refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords don't match",
-  });
+ 
 
   const form = useForm({
     resolver: zodResolver(formSchema),
